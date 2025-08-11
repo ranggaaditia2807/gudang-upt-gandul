@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Gudang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-15 py-8 max-w-2xl">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-4 mb-4">
+                <img src="P..jpeg" alt="Gudang dengan rak-rak penyimpanan barang-barang logistik dan karton" class="rounded-full shadow-lg" />
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">Manajemen Gudang</h1>
+                    <p class="text-gray-600">Sistem pencatatan persediaan barang,pengeluaran, dan pemasukan barang</p>
+                </div>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <div class="flex border-b border-gray-200">
+                <button id="inventoryTab" class="tab-btn active px-4 py-2 font-medium text-gray-700 hover:text-blue-600 focus:outline-none">
+                    <i class="fas fa-boxes mr-2"></i> Persediaan
+                </button>
+                <button id="addItemTab" class="tab-btn px-4 py-2 font-medium text-gray-700 hover:text-blue-600 focus:outline-none">
+                    <i class="fas fa-plus-circle mr-2"></i> Tambah Barang
+                </button>
+                <button id="outgoingTab" class="tab-btn px-4 py-2 font-medium text-gray-700 hover:text-blue-600 focus:outline-none">
+                    <i class="fas fa-truck-moving mr-2"></i> Pengeluaran
+                </button>
+            </div>
+            <!-- Tambahkan tombol laporan -->
+            <button id="reportTab" class="tab-btn px-4 py-2 font-medium text-gray-700 hover:text-blue-600 focus:outline-none">
+                <i class="fas fa-file-alt mr-2"></i> Laporan Pengeluaran
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Inventory Section -->
+            <section id="inventorySection" class="p-6 bg-white rounded-lg shadow-sm">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Daftar Persediaan Barang</h2>
+                    <div class="relative">
+                        <input type="text" id="searchInventory" placeholder="Cari barang..." class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Barang</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Satuan</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody" class="bg-white divide-y divide-gray-200">
+                            <!-- Data akan dimuat di sini -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Add Item Section -->
+            <section id="addItemSection" class="hidden p-6 bg-white rounded-lg shadow-sm">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6">Tambah Barang Baru</h2>
+                <form id="addItemForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="itemCode" class="block text-sm font-medium text-gray-700 mb-1">Kode Barang*</label>
+                            <input type="text" id="itemCode" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="itemName" class="block text-sm font-medium text-gray-700 mb-1">Nama Barang*</label>
+                            <input type="text" id="itemName" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label for="itemCategory" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                            <select id="itemCategory" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-700">
+                                <option value="">Pilih Kategori</option>
+                                <option value="Bahan Baku">Bahan Baku</option>
+                                <option value="Kemasan">Kemasan</option>
+                                <option value="Peralatan">Peralatan</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="itemUnit" class="block text-sm font-medium text-gray-700 mb-1">Satuan</label>
+                            <input type="text" id="itemUnit" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label for="itemStock" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Stok Awal*</label>
+                            <input type="number" id="itemStock" required min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="itemLocation" class="block text-sm font-medium text-gray-700 mb-1">Lokasi Gudang</label>
+                            <input type="text" id="itemLocation" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <label for="itemNotes" class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
+                            <textarea id="itemNotes" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                        </div>
+                    <div class="md:col-span-2 flex justify-end space-x-3 pt-4">
+                            <button type="reset" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Reset
+                            </button>
+                            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fas fa-save mr-2"></i> Simpan Barang
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Outgoing Section -->
+            <section id="outgoingSection" class="hidden p-6 bg-white rounded-lg shadow-sm">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6">Pencatatan Pengeluaran Barang</h2>
+                <form id="outgoingForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2">
+                            <label for="outgoingItem" class="block text-sm font-medium text-gray-700 mb-1">Pilih Barang*</label>
+                            <select id="outgoingItem" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Pilih Barang</option>
+                                <!-- Opsi akan diisi oleh JavaScript -->
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="outgoingQuantity" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Keluar*</label>
+                            <input type="number" id="outgoingQuantity" required min="1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="outgoingDate" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Keluar*</label>
+                            <input type="date" id="outgoingDate" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div>
+                            <label for="outgoingDepartment" class="block text-sm font-medium text-gray-700 mb-1">Departemen</label>
+                            <input type="text" id="outgoingDepartment" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div>
+                            <label for="outgoingRecipient" class="block text-sm font-medium text-gray-700 mb-1">Penerima</label>
+                            <input type="text" id="outgoingRecipient" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <label for="outgoingPurpose" class="block text-sm font-medium text-gray-700 mb-1">Tujuan Pengeluaran</label>
+                            <textarea id="outgoingPurpose" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="reset" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Reset
+                        </button>
+                        <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-file-export mr-2"></i> Catat Pengeluaran
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Report Section -->
+            <section id="reportSection" class="hidden p-6 bg-white rounded-lg shadow-sm">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6">Laporan Pengeluaran Barang</h2>
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex space-x-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Dari Tanggal</label>
+                            <input type="date" id="reportFromDate" class="px-3 py-2 border rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Sampai Tanggal</label>
+                            <input type="date" id="reportToDate" class="px-3 py-2 border rounded-md">
+                        </div>
+                    </div>
+                    <button id="generateReportBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        <i class="fas fa-filter mr-2"></i>Filter
+                    </button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Barang</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Barang</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penerima</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tujuan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody" class="bg-white divide-y divide-gray-200">
+                            <!-- Data laporan akan muncul di sini -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-6 bg-gray-800 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <p>Sistem Manajemen Gudang</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample data
+            let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+            let outgoingRecords = JSON.parse(localStorage.getItem('outgoingRecords')) || [];
+            
+            // Tab switching
+            const tabs = ['inventory', 'addItem', 'outgoing', 'report'];
+            const tabButtons = tabs.map(tab => document.getElementById(`${tab}Tab`));
+            const tabSections = tabs.map(tab => document.getElementById(`${tab}Section`));
+            
+            tabButtons.forEach((button, index) => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabSections.forEach(section => section.classList.add('hidden'));
+                    
+                    button.classList.add('active');
+                    tabSections[index].classList.remove('hidden');
+                });
+            });
+            
+            // Initialize navigation (activate inventory tab by default)
+            document.getElementById('inventoryTab').click();
+            
+            // Render inventory table
+            function renderInventory() {
+                const tableBody = document.getElementById('inventoryTableBody');
+                tableBody.innerHTML = '';
+                
+                if (inventory.length === 0) {
+                    const emptyRow = document.createElement('tr');
+                    emptyRow.innerHTML = `
+                        <td colspan="7" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                            Tidak ada data persediaan. Tambahkan barang terlebih dahulu.
+                        </td>
+                    `;
+                    tableBody.appendChild(emptyRow);
+                    return;
+                }
+                
+                inventory.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.code}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.category || '-'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${item.stock < 10 ? 'text-red-600 font-bold' : ''}">${item.stock}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.unit}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.location || '-'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="text-red-600 hover:text-red-900 delete-btn" data-id="${item.code}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                // Add event listeners to delete buttons
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const itemCode = this.getAttribute('data-id');
+                        if (confirm(`Yakin ingin menghapus barang ${item.name} (${itemCode})?`)) {
+                            inventory = inventory.filter(item => item.code !== itemCode);
+                            saveInventory();
+                            renderInventory();
+                        }
+                    });
+                });
+            }
+            
+            // Add item form
+            document.getElementById('addItemForm').addEventListener('submit', function(e) {
+                if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
+                    e.preventDefault(); 
+                    return false;
+                }
+                
+                // Validasi input
+                if (!document.getElementById('itemCode').value || 
+                    !document.getElementById('itemName').value ||
+                    !document.getElementById('itemUnit').value ||
+                    !document.getElementById('itemStock').value) {
+                    alert('Mohon isi semua field yang wajib diisi!');
+                    return;
+                }
+
+                const newItem = {
+                    code: document.getElementById('itemCode').value,
+                    name: document.getElementById('itemName').value,
+                    category: document.getElementById('itemCategory').value,
+                    unit: document.getElementById('itemUnit').value,
+                    stock: parseInt(document.getElementById('itemStock').value),
+                    location: document.getElementById('itemLocation').value,
+                    notes: document.getElementById('itemNotes').value
+                };
+                
+                // Check if item code already exists
+                const existingItem = inventory.find(item => item.code === newItem.code);
+                if (existingItem) {
+                    alert('Kode barang sudah ada! Gunakan kode yang berbeda.');
+                    return;
+                }
+                
+                inventory.push(newItem);
+                saveInventory();
+                
+                // Reset form and show success message
+                this.reset();
+                alert('Barang berhasil ditambahkan!');
+                
+                // Refresh inventory table
+                renderInventory();
+                // Switch to inventory tab
+                document.getElementById('inventoryTab').click();
+            });
+            
+            // Outgoing form
+            function populateItemDropdown() {
+                const dropdown = document.getElementById('outgoingItem');
+                dropdown.innerHTML = '<option value="">Pilih Barang</option>';
+                
+                inventory.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.code;
+                    option.textContent = `${item.code} - ${item.name} (Stok: ${item.stock} ${item.unit})`;
+                    dropdown.appendChild(option);
+                });
+            }
+            
+            document.getElementById('outgoingForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const selectedItemCode = document.getElementById('outgoingItem').value;
+                const quantity = parseInt(document.getElementById('outgoingQuantity').value);
+                const date = document.getElementById('outgoingDate').value;
+                
+                // Find the item in inventory
+                const itemIndex = inventory.findIndex(item => item.code === selectedItemCode);
+                if (itemIndex === -1) {
+                    alert('Barang tidak ditemukan!');
+                    return;
+                }
+                
+                // Check stock
+                if (inventory[itemIndex].stock < quantity) {
+                    alert(`Stok tidak mencukupi! Stok tersedia: ${inventory[itemIndex].stock}`);
+                    return;
+                }
+                
+                // Reduce stock
+                inventory[itemIndex].stock -= quantity;
+                
+                // Create outgoing record
+                const record = {
+                    itemCode: selectedItemCode,
+                    itemName: inventory[itemIndex].name,
+                    quantity: quantity,
+                    date: date,
+                    recipient: document.getElementById('outgoingRecipient').value,
+                    department: document.getElementById('outgoingDepartment').value,
+                    purpose: document.getElementById('outgoingPurpose').value,
+                    timestamp: new Date().toISOString()
+                };
+                
+                outgoingRecords.push(record);
+                saveInventory();
+                localStorage.setItem('outgoingRecords', JSON.stringify(outgoingRecords));
+                
+                // Reset form and show success message
+                this.reset();
+                alert('Pengeluaran berhasil dicatat!');
+                
+                // Refresh inventory table
+                renderInventory();
+            });
+            
+            // Inventory search
+            document.getElementById('searchInventory').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#inventoryTableBody tr');
+                
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    const itemCode = cells[0].textContent.toLowerCase();
+                    const itemName = cells[1].textContent.toLowerCase();
+                    
+                    if (itemName.includes(searchTerm) || itemCode.includes(searchTerm)) {
+                        row.style.removeProperty('display');
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Helper functions
+            function saveInventory() {
+                localStorage.setItem('inventory', JSON.stringify(inventory));
+            }
+            
+            // Initialize UI
+            renderInventory();
+            populateItemDropdown();
+            
+            // Add report tab functionality
+            document.getElementById('reportTab').addEventListener('click', function() {
+                // Set default dates
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('reportFromDate').value = today;
+                document.getElementById('reportToDate').value = today;
+                generateReport();
+            });
+            
+            // Generate report function
+            function generateReport() {
+                const fromDate = document.getElementById('reportFromDate').value;
+                const toDate = document.getElementById('reportToDate').value;
+                
+                const filteredRecords = outgoingRecords.filter(record => {
+                    return record.date >= fromDate && record.date <= toDate;
+                });
+                
+                const reportBody = document.getElementById('reportTableBody');
+                reportBody.innerHTML = '';
+                
+                if (filteredRecords.length === 0) {
+                    const emptyRow = document.createElement('tr');
+                    emptyRow.innerHTML = `
+                        <td colspan="6" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                            Tidak ada data pengeluaran untuk periode ini.
+                        </td>
+                    `;
+                    reportBody.appendChild(emptyRow);
+                    return;
+                }
+                
+                filteredRecords.forEach(record => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${record.date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${record.itemCode}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${record.itemName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${record.quantity}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${record.recipient || '-'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${record.purpose || '-'}</td>
+                    `;
+                    reportBody.appendChild(row);
+                });
+            }
+            
+            // Add event listener for generate report button
+            document.getElementById('generateReportBtn').addEventListener('click', generateReport);
+        });
+    </script>
+
+    <style>
+        .tab-btn.active {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+        }
+    </style>
+</body>
+</html>
