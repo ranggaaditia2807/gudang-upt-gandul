@@ -207,11 +207,14 @@
     <div class="header">
         <div class="logo">Gudang PLN</div>
         <div class="nav-links">
-            <a href="index.html">Home</a>
+            <a href="../home/index.html">Home</a>
+            <a href="../barang.html">Manajemen Barang</a>
+            <a href="../transaksi/index.html">Transaksi</a>
+            <a href="../laporan.html">Laporan</a>
         </div>
         <div class="user-profile">
             <span>Admin Gudang</span>
-            <img src="P..jpeg" alt="Profile" width="30">
+            <img src="../transaksi/P..jpeg" alt="Profile" width="30">
         </div>
     </div>
     <div class="dashboard-content">
@@ -298,7 +301,7 @@
             const bgSlider = document.getElementById('bg-slider');
             slideImages.forEach((src, i) => {
                 const img = document.createElement('img');
-                img.src = "p..jpeg"src;
+                img.src = src;
                 img.className = 'bg-slide-img' + (i === 0 ? ' active' : '');
                 bgSlider.appendChild(img);
             });
